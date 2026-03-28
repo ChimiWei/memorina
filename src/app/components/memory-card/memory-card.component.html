@@ -1,0 +1,25 @@
+<button
+  class="card-wrapper"
+  [attr.aria-label]="card.isFlipped || card.isMatched ? 'Carta: ' + card.content : 'Carta virada'"
+  [attr.aria-pressed]="card.isFlipped || card.isMatched"
+  [disabled]="disabled || card.isMatched"
+  (click)="handleClick()"
+>
+  <div class="card-inner">
+
+    <!-- VERSO (face oculta) -->
+    <div class="card-face card-back" aria-hidden="true">
+      <span class="card-back__pattern"></span>
+      <span class="card-back__logo">✦</span>
+    </div>
+
+    <!-- FRENTE (face revelada) -->
+    <div class="card-face card-front" aria-hidden="true">
+      <span class="card-front__content">{{ card.content }}</span>
+
+      <!-- brilho de match -->
+      <span class="card-front__shine" *ngIf="card.isMatched"></span>
+    </div>
+
+  </div>
+</button>
