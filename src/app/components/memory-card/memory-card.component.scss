@@ -161,6 +161,13 @@ $shine: rgba(255, 255, 255, 0.55);
     transition: transform 200ms ease;
   }
 
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(#{$radius} - 2px);
+  }
+
   /* matched shimmer overlay */
   &__shine {
     position: absolute;

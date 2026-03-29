@@ -7,6 +7,7 @@ import {
   computed,
   ElementRef,
   viewChildren,
+  OnInit,
 } from '@angular/core';
 
 @Component({
@@ -15,7 +16,7 @@ import {
   styleUrls: ['./card-setup.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardSetupComponent {
+export class CardSetupComponent implements OnInit {
   /** How many unique images the user needs to upload */
   readonly totalPairs = input.required<number>();
 
@@ -39,16 +40,19 @@ export class CardSetupComponent {
     return imgs.length === this.totalPairs() && imgs.every(img => img !== null);
   });
 
+  protected readonly filledCount = computed(() => {
+    return this.images().filter(img => img !== null).length;
+  });
+
   /** Indices array for template iteration */
   protected readonly slots = computed(() => {
-    const count = this.totalPairs();
-    // Initialize images array if needed
-    const current = this.images();
-    if (current.length !== count) {
-      this.images.set(new Array(count).fill(null));
-    }
-    return Array.from({ length: count }, (_, i) => i);
+    return Array.from({ length: this.totalPairs() }, (_, i) => i);
   });
+
+  ngOnInit(): void {
+    const count = this.totalPairs();
+    this.images.set(new Array(count).fill(null));
+  }
 
   onSlotClick(index: number, fileInput: HTMLInputElement): void {
     this.activeSlotIndex = index;

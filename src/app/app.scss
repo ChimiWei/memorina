@@ -2,6 +2,9 @@
 
 .content {
   animation: content-fade-in 400ms ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .board-header {
@@ -11,6 +14,8 @@
   gap: 24px;
   padding: 24px 32px 0;
   position: relative;
+  width: 100%;
+  max-width: 800px;
 }
 
 .back-btn {
@@ -43,11 +48,22 @@
   }
 }
 
+.game-timer-wrapper {
+  position: absolute;
+  right: 32px;
+}
+
 .board {
   display: grid;
   gap: 16px;
   padding: 24px 32px 32px;
   place-content: center;
+}
+
+.board-footer {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 32px;
 }
 
 @keyframes content-fade-in {
@@ -58,5 +74,48 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.score-container-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  animation: content-fade-in 300ms ease-out;
+}
+
+.restart-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(108, 92, 231, 0.4);
+  border: 1px solid rgba(162, 155, 254, 0.5);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+
+  &:hover {
+    transform: scale(1.05) translateY(-2px);
+    background: rgba(108, 92, 231, 0.6);
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.45);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #a29bfe;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &__icon {
+    font-size: 1.4rem;
+    line-height: 1;
   }
 }

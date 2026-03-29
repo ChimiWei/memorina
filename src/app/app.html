@@ -3,7 +3,15 @@
 <main class="main">
   @switch (screen()) {
     @case ('menu') {
-      <app-main-menu (startGame)="onStartGame($event)" />
+      <app-main-menu (startGame)="onMenuStart($event)" />
+    }
+    @case ('setup') {
+      <app-card-setup
+        [totalPairs]="config().totalPairs"
+        [cardsPerRow]="config().cardsPerRow"
+        (startWithImages)="onSetupStart($event)"
+        (backToMenu)="onBackToMenu()"
+      />
     }
     @case ('playing') {
       <div class="content">
@@ -14,7 +22,25 @@
             aria-label="Voltar ao menu"
             id="btn-back-menu"
           >← Menu</button>
-          <app-score-display [score]="score()" />
+          
+          <div class="score-container-group">
+            <app-score-display [score]="score()" class="score-display-wrapper" />
+            @if (isGameOver()) {
+              <button
+                class="restart-btn"
+                (click)="onRestart()"
+                aria-label="Reiniciar o jogo"
+              >
+                <span class="restart-btn__icon">↻</span>
+              </button>
+            }
+          </div>
+          
+          <app-game-timer
+            class="game-timer-wrapper"
+            [running]="isPlaying()"
+            (tick)="onTimerTick($event)"
+          />
         </div>
 
         <div
@@ -28,6 +54,13 @@
               (cardClick)="onCardClick($event)"
             />
           }
+        </div>
+
+        <div class="board-footer">
+          <app-multiplier-display
+            [elapsedSeconds]="elapsedSeconds()"
+            [lastMatchAt]="lastMatchAt()"
+          />
         </div>
       </div>
     }
