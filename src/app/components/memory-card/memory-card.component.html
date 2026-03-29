@@ -1,8 +1,8 @@
 <button
   class="card-wrapper"
-  [attr.aria-label]="card.isFlipped || card.isMatched ? 'Carta: ' + card.content : 'Carta virada'"
-  [attr.aria-pressed]="card.isFlipped || card.isMatched"
-  [disabled]="disabled || card.isMatched"
+  [attr.aria-label]="card().isFlipped || card().isMatched ? 'Carta: ' + card().content : 'Carta virada'"
+  [attr.aria-pressed]="card().isFlipped || card().isMatched"
+  [disabled]="disabled() || card().isMatched"
   (click)="handleClick()"
 >
   <div class="card-inner">
@@ -15,10 +15,20 @@
 
     <!-- FRENTE (face revelada) -->
     <div class="card-face card-front" aria-hidden="true">
-      <span class="card-front__content">{{ card.content }}</span>
+      @if (card().imageUrl) {
+        <img
+          class="card-front__image"
+          [src]="card().imageUrl"
+          [alt]="card().content"
+        />
+      } @else {
+        <span class="card-front__content">{{ card().content }}</span>
+      }
 
       <!-- brilho de match -->
-      <span class="card-front__shine" *ngIf="card.isMatched"></span>
+      @if (card().isMatched) {
+        <span class="card-front__shine"></span>
+      }
     </div>
 
   </div>

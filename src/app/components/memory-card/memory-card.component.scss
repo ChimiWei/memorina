@@ -29,9 +29,9 @@ $shine: rgba(255, 255, 255, 0.55);
   height: $card-h;
   perspective: 900px;
 
-  /* cursor changes when card is interactable */
-  &:not(.disabled):not(.matched) .card-wrapper:hover .card-inner {
-    transform: rotateY(12deg) scale(1.04);
+  /* hover: lift + shadow only, NO rotateY to avoid conflicting with flip */
+  &:not(.disabled):not(.matched):not(.flipped) .card-wrapper:hover .card-inner {
+    transform: scale(1.06);
     box-shadow: 0 18px 40px rgba(108, 92, 231, 0.45);
   }
 
@@ -44,6 +44,16 @@ $shine: rgba(255, 255, 255, 0.55);
   &.matched .card-inner {
     transform: rotateY(180deg);
     animation: matched-pop $duration * 0.9 ease forwards;
+  }
+
+  /* Disable pointer events on the card while it's flipping back to
+     prevent hover transforms from interfering mid-transition */
+  &.flipping-back {
+    pointer-events: none;
+
+    .card-inner {
+      transform: rotateY(0deg);
+    }
   }
 }
 
@@ -83,6 +93,7 @@ $shine: rgba(255, 255, 255, 0.55);
   box-shadow:
     0 6px 20px rgba(0, 0, 0, 0.35),
     0 2px 6px rgba(0, 0, 0, 0.2);
+  will-change: transform;
 }
 
 /* =========================================================

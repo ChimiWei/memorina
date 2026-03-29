@@ -1,0 +1,23 @@
+<div class="multiplier-container" [class]="currentTier().cssClass">
+  <div class="multiplier-top">
+    <span class="multiplier-label">COMBO</span>
+    <span class="multiplier-value">{{ currentTier().label }}</span>
+  </div>
+  <div class="progress-track">
+    <div
+      class="progress-fill"
+      [style.width.%]="progressPct()"
+    ></div>
+  </div>
+  <span class="multiplier-hint">
+    @if (currentTier().value >= 3) {
+      🔥 Rápido!
+    } @else if (currentTier().value >= 2) {
+      ⚡ Bom ritmo
+    } @else if (currentTier().value >= 1.5) {
+      ✦ Continue assim
+    } @else {
+      Encontre um par!
+    }
+  </span>
+</div>

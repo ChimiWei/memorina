@@ -1,0 +1,66 @@
+<div class="setup-container">
+  <div class="setup-header">
+    <button
+      class="back-btn"
+      (click)="onBack()"
+      aria-label="Voltar ao menu"
+      id="btn-setup-back"
+    >← Menu</button>
+    <h2 class="setup-title">Escolha as imagens</h2>
+    <span class="setup-hint">
+      {{ totalPairs() }} pares necessários
+    </span>
+  </div>
+
+  <div
+    class="setup-grid"
+    [style.grid-template-columns]="'repeat(' + cardsPerRow() + ', 100px)'"
+  >
+    @for (slotIdx of slots(); track slotIdx) {
+      <!-- Hidden file input per slot -->
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        class="sr-only"
+        (change)="onFileSelected($event)"
+        [attr.aria-label]="'Upload imagem para par ' + (slotIdx + 1)"
+      />
+
+      <button
+        class="slot"
+        [class.slot--filled]="images()[slotIdx] !== null"
+        (click)="onSlotClick(slotIdx, fileInput)"
+        [attr.aria-label]="images()[slotIdx] ? 'Trocar imagem do par ' + (slotIdx + 1) : 'Adicionar imagem ao par ' + (slotIdx + 1)"
+        type="button"
+      >
+        @if (images()[slotIdx]; as imgUrl) {
+          <img
+            class="slot__image"
+            [src]="imgUrl"
+            alt="Imagem do par {{ slotIdx + 1 }}"
+          />
+          <span class="slot__replace-hint">trocar</span>
+        } @else {
+          <span class="slot__plus">+</span>
+          <span class="slot__number">{{ slotIdx + 1 }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="setup-footer">
+    <button
+      class="start-btn"
+      [disabled]="!allFilled()"
+      (click)="onStart()"
+      id="btn-start-game"
+    >
+      <span class="start-btn__icon">▶</span>
+      <span class="start-btn__label">Iniciar Jogo</span>
+    </button>
+    <p class="setup-progress">
+      {{ images().filter(img => img !== null).length }} / {{ totalPairs() }} imagens
+    </p>
+  </div>
+</div>

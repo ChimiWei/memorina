@@ -1,0 +1,158 @@
+/* =========================================================
+   Main Menu
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$accent: #6c5ce7;
+$accent-light: #a29bfe;
+$surface: rgba(13, 8, 48, 0.65);
+$border: rgba(108, 92, 231, 0.35);
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-height, 64px));
+  padding: 24px;
+}
+
+.menu-container {
+  width: 100%;
+  max-width: 420px;
+  animation: menu-fade-in 600ms ease-out;
+}
+
+.menu-card {
+  text-align: center;
+  padding: 48px 36px 40px;
+  border-radius: 20px;
+  background: $surface;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid $border;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(108, 92, 231, 0.15);
+}
+
+/* ── Title ─────────────────────────────────────── */
+.menu-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0 0 8px;
+  text-shadow:
+    0 0 12px rgba($accent-light, 0.7),
+    0 0 40px rgba($accent, 0.3);
+  animation: title-glow 3s ease-in-out infinite;
+}
+
+.menu-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 36px;
+  letter-spacing: 0.08em;
+}
+
+/* ── Buttons ───────────────────────────────────── */
+.menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.menu-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+
+  &:focus-visible {
+    outline: 3px solid $accent-light;
+    outline-offset: 3px;
+  }
+
+  &__icon {
+    font-size: 1rem;
+  }
+
+  /* Start button */
+  &--start {
+    background: linear-gradient(135deg, $accent, darken($accent, 8%));
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba($accent, 0.4);
+
+    &:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 30px rgba($accent, 0.55);
+    }
+
+    &:active {
+      transform: translateY(1px) scale(0.98);
+    }
+  }
+
+  /* Configure button */
+  &--config {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}
+
+/* ── Config summary ────────────────────────────── */
+.menu-config-summary {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+@keyframes menu-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes title-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 12px rgba($accent-light, 0.7),
+      0 0 40px rgba($accent, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 20px rgba($accent-light, 0.9),
+      0 0 60px rgba($accent, 0.5);
+  }
+}

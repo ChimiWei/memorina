@@ -1,0 +1,87 @@
+<!-- backdrop (click to dismiss) -->
+<div
+  class="modal-backdrop"
+  (click)="onBackdropClick($event)"
+  id="config-modal-backdrop"
+>
+  <div class="modal-panel" role="document">
+    <header class="modal-header">
+      <h2 class="modal-title">Configurações</h2>
+      <button
+        class="modal-close"
+        (click)="onClose()"
+        aria-label="Fechar configurações"
+        id="btn-close-config"
+      >✕</button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- Total pairs -->
+      <div class="field">
+        <span class="field-label">Pares</span>
+        <div class="stepper">
+          <button
+            class="stepper-btn"
+            [disabled]="!canDecrementPairs()"
+            (click)="decrementPairs()"
+            aria-label="Diminuir pares"
+            id="btn-dec-pairs"
+          >−</button>
+          <span class="stepper-value" aria-live="polite">
+            {{ totalPairs() }}
+          </span>
+          <button
+            class="stepper-btn"
+            [disabled]="!canIncrementPairs()"
+            (click)="incrementPairs()"
+            aria-label="Aumentar pares"
+            id="btn-inc-pairs"
+          >+</button>
+        </div>
+        <span class="field-hint">{{ totalCards() }} cartas no total</span>
+      </div>
+
+      <!-- Cards per row -->
+      <div class="field">
+        <span class="field-label">Cartas por fila</span>
+        <div class="stepper">
+          <button
+            class="stepper-btn"
+            [disabled]="!canDecrementPerRow()"
+            (click)="decrementPerRow()"
+            aria-label="Diminuir cartas por fila"
+            id="btn-dec-per-row"
+          >−</button>
+          <span class="stepper-value" aria-live="polite">
+            {{ cardsPerRow() }}
+          </span>
+          <button
+            class="stepper-btn"
+            [disabled]="!canIncrementPerRow()"
+            (click)="incrementPerRow()"
+            aria-label="Aumentar cartas por fila"
+            id="btn-inc-per-row"
+          >+</button>
+        </div>
+        <span class="field-hint">
+          {{ totalCards() / cardsPerRow() }} filas completas
+        </span>
+      </div>
+
+    </div>
+
+    <footer class="modal-footer">
+      <button
+        class="modal-btn modal-btn--secondary"
+        (click)="onClose()"
+        id="btn-cancel-config"
+      >Cancelar</button>
+      <button
+        class="modal-btn modal-btn--primary"
+        (click)="onSave()"
+        id="btn-save-config"
+      >Salvar</button>
+    </footer>
+  </div>
+</div>

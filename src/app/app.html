@@ -1,20 +1,37 @@
-
 <app-header></app-header>
 
 <main class="main">
-  <div class="content">
-    <div class="board">
-      <app-memory-card
-        *ngFor="let card of cards()"
-        [card]="card"
-        [disabled]="isDisabled(card)"
-        (cardClick)="onCardClick($event)"
-      />
-    </div>
+  @switch (screen()) {
+    @case ('menu') {
+      <app-main-menu (startGame)="onStartGame($event)" />
+    }
+    @case ('playing') {
+      <div class="content">
+        <div class="board-header">
+          <button
+            class="back-btn"
+            (click)="onBackToMenu()"
+            aria-label="Voltar ao menu"
+            id="btn-back-menu"
+          >← Menu</button>
+          <app-score-display [score]="score()" />
+        </div>
 
-    <p class="score">Pontos: {{ score() }}</p>
-  </div>
+        <div
+          class="board"
+          [style.grid-template-columns]="'repeat(' + config().cardsPerRow + ', 100px)'"
+        >
+          @for (card of cards(); track card.id) {
+            <app-memory-card
+              [card]="card"
+              [disabled]="isDisabled(card)"
+              (cardClick)="onCardClick($event)"
+            />
+          }
+        </div>
+      </div>
+    }
+  }
 </main>
-
 
 <router-outlet />

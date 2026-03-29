@@ -1,51 +1,41 @@
 import {
   Component,
-  Input,
-  Output,
-  EventEmitter,
-  HostBinding,
-  signal,
-  computed,
+  ChangeDetectionStrategy,
+  input,
+  output,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 export interface MemoryCard {
   id: number;
   pairId: number;
-  content: string; // emoji, imagem ou texto
+  content: string;
+  imageUrl?: string;
   isFlipped: boolean;
   isMatched: boolean;
 }
 
 @Component({
   selector: 'app-memory-card',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './memory-card.component.html',
   styleUrls: ['./memory-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.flipped]': 'card().isFlipped',
+    '[class.matched]': 'card().isMatched',
+    '[class.disabled]': 'disabled() || card().isMatched',
+  },
 })
 export class MemoryCardComponent {
-  @Input({ required: true }) card!: MemoryCard;
+  readonly card = input.required<MemoryCard>();
 
   /** Impede cliques quando outra animação está rolando ou o par já foi encontrado */
-  @Input() disabled = false;
+  readonly disabled = input(false);
 
-  @Output() cardClick = new EventEmitter<MemoryCard>();
-
-  @HostBinding('class.flipped') get flipped() {
-    return this.card?.isFlipped;
-  }
-
-  @HostBinding('class.matched') get matched() {
-    return this.card?.isMatched;
-  }
-
-  @HostBinding('class.disabled') get isDisabled() {
-    return this.disabled || this.card?.isMatched;
-  }
+  readonly cardClick = output<MemoryCard>();
 
   handleClick(): void {
-    if (this.disabled || this.card.isFlipped || this.card.isMatched) return;
-    this.cardClick.emit(this.card);
+    const c = this.card();
+    if (this.disabled() || c.isFlipped || c.isMatched) return;
+    this.cardClick.emit(c);
   }
 }

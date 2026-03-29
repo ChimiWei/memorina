@@ -1,0 +1,84 @@
+/* =========================================================
+   Score Display — Pixel/Arcade Style
+   ========================================================= */
+
+/* Google Fonts "Press Start 2P" loaded via @import for pixel look */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$glow-color: #a29bfe;
+$flash-color: #fdcb6e;
+$text-color: #dfe6e9;
+
+:host {
+  display: block;
+  text-align: center;
+  padding: 12px 0 4px;
+  font-family: 'Press Start 2P', monospace;
+  user-select: none;
+
+  /* bump animation class toggled by the component */
+  &.bumped .score-value {
+    animation: score-bump 500ms ease-out;
+  }
+}
+
+.score-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(162, 155, 254, 0.3);
+}
+
+.score-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
+
+.score-value {
+  font-size: 1.6rem;
+  color: $text-color;
+  text-shadow:
+    0 0 6px rgba($glow-color, 0.6),
+    0 0 20px rgba($glow-color, 0.3);
+  transition:
+    transform 150ms ease,
+    text-shadow 150ms ease;
+}
+
+/* =========================================================
+   Bump Keyframes
+   — drops slightly down, flashes yellow, then returns
+   ========================================================= */
+@keyframes score-bump {
+  0% {
+    transform: translateY(0) scale(1);
+    text-shadow:
+      0 0 6px rgba($glow-color, 0.6),
+      0 0 20px rgba($glow-color, 0.3);
+    color: $text-color;
+  }
+  20% {
+    transform: translateY(6px) scale(1.25);
+    text-shadow:
+      0 0 14px rgba($flash-color, 0.9),
+      0 0 40px rgba($flash-color, 0.5);
+    color: $flash-color;
+  }
+  50% {
+    transform: translateY(3px) scale(1.1);
+    color: $flash-color;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    text-shadow:
+      0 0 6px rgba($glow-color, 0.6),
+      0 0 20px rgba($glow-color, 0.3);
+    color: $text-color;
+  }
+}

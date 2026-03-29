@@ -1,0 +1,40 @@
+/* =========================================================
+   Game Timer — Pixel/Arcade Style
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$glow-color: #74b9ff;
+$text-color: #dfe6e9;
+
+:host {
+  display: block;
+  font-family: 'Press Start 2P', monospace;
+  user-select: none;
+}
+
+.timer-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(116, 185, 255, 0.3);
+}
+
+.timer-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+}
+
+.timer-value {
+  font-size: 1.2rem;
+  color: $text-color;
+  text-shadow:
+    0 0 6px rgba($glow-color, 0.6),
+    0 0 20px rgba($glow-color, 0.3);
+  font-variant-numeric: tabular-nums;
+}

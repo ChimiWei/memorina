@@ -1,0 +1,251 @@
+/* =========================================================
+   Card Setup Screen
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$accent: #6c5ce7;
+$accent-light: #a29bfe;
+$card-w: 100px;
+$card-h: 130px;
+$radius: 14px;
+
+/* ── sr-only (visually hidden) ─────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:host {
+  display: block;
+  animation: setup-fade-in 400ms ease-out;
+}
+
+.setup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 32px 32px;
+}
+
+/* ── Header ────────────────────────────────────── */
+.setup-header {
+  text-align: center;
+  position: relative;
+  width: 100%;
+}
+
+.back-btn {
+  all: unset;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease, transform 100ms ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-light;
+    outline-offset: 2px;
+  }
+}
+
+.setup-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.85rem;
+  color: #fff;
+  margin: 0 0 6px;
+  text-shadow: 0 0 10px rgba($accent-light, 0.5);
+}
+
+.setup-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Grid ──────────────────────────────────────── */
+.setup-grid {
+  display: grid;
+  gap: 16px;
+  place-content: center;
+}
+
+/* ── Slot (empty card placeholder) ─────────────── */
+.slot {
+  all: unset;
+  position: relative;
+  width: $card-w;
+  height: $card-h;
+  border-radius: $radius;
+  border: 2px dashed rgba($accent-light, 0.35);
+  background: rgba(26, 16, 96, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+
+  &:hover {
+    border-color: rgba($accent-light, 0.6);
+    background: rgba(26, 16, 96, 0.55);
+    transform: scale(1.04);
+    box-shadow: 0 8px 24px rgba($accent, 0.25);
+  }
+
+  &:focus-visible {
+    outline: 3px solid $accent-light;
+    outline-offset: 3px;
+  }
+
+  &__plus {
+    font-size: 2rem;
+    color: rgba($accent-light, 0.5);
+    line-height: 1;
+    transition: color 150ms ease;
+  }
+
+  &__number {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  &:hover &__plus {
+    color: rgba($accent-light, 0.8);
+  }
+
+  /* ── Filled slot ──────────────────────────────── */
+  &--filled {
+    border-style: solid;
+    border-color: rgba($accent-light, 0.5);
+    background: rgba(26, 16, 96, 0.7);
+    padding: 0;
+
+    &:hover {
+      border-color: $accent-light;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc($radius - 2px);
+  }
+
+  &__replace-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 4px 0;
+    background: rgba(0, 0, 0, 0.65);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.6rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  &:hover &__replace-hint {
+    opacity: 1;
+  }
+}
+
+/* ── Footer ────────────────────────────────────── */
+.setup-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.start-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 36px;
+  border-radius: 12px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, $accent, darken($accent, 8%));
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba($accent, 0.4);
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba($accent, 0.55);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 3px solid $accent-light;
+    outline-offset: 3px;
+  }
+
+  &__icon {
+    font-size: 1rem;
+  }
+}
+
+.setup-progress {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+@keyframes setup-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

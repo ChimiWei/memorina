@@ -1,0 +1,148 @@
+/* =========================================================
+   Multiplier Display
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$gold: #fdcb6e;
+$gold-glow: rgba(253, 203, 110, 0.6);
+$blue: #74b9ff;
+$blue-glow: rgba(116, 185, 255, 0.6);
+$green: #00b894;
+$green-glow: rgba(0, 184, 148, 0.5);
+$dim: rgba(255, 255, 255, 0.35);
+
+:host {
+  display: block;
+  text-align: center;
+  padding: 4px 0 12px;
+  font-family: 'Press Start 2P', monospace;
+  user-select: none;
+}
+
+.multiplier-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 300ms ease, box-shadow 300ms ease;
+}
+
+.multiplier-top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.multiplier-label {
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.multiplier-value {
+  font-size: 1.3rem;
+  transition: color 300ms ease, text-shadow 300ms ease;
+}
+
+.multiplier-hint {
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 300ms ease;
+}
+
+/* ── Progress bar ──────────────────────────────── */
+.progress-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s linear, background 300ms ease;
+}
+
+/* ── Tier: Gold (3×) ─────────────────────────── */
+.tier-gold {
+  border-color: rgba($gold, 0.4);
+  box-shadow: 0 0 20px rgba($gold, 0.15);
+
+  .multiplier-value {
+    color: $gold;
+    text-shadow: 0 0 12px $gold-glow, 0 0 30px rgba($gold, 0.3);
+    animation: tier-pulse 800ms ease-in-out infinite;
+  }
+
+  .progress-fill {
+    background: linear-gradient(90deg, $gold, lighten($gold, 10%));
+    box-shadow: 0 0 8px $gold-glow;
+  }
+
+  .multiplier-hint {
+    color: $gold;
+  }
+}
+
+/* ── Tier: Blue (2×) ─────────────────────────── */
+.tier-blue {
+  border-color: rgba($blue, 0.3);
+  box-shadow: 0 0 14px rgba($blue, 0.1);
+
+  .multiplier-value {
+    color: $blue;
+    text-shadow: 0 0 10px $blue-glow;
+  }
+
+  .progress-fill {
+    background: linear-gradient(90deg, $blue, lighten($blue, 8%));
+    box-shadow: 0 0 6px $blue-glow;
+  }
+
+  .multiplier-hint {
+    color: rgba($blue, 0.7);
+  }
+}
+
+/* ── Tier: Green (1.5×) ──────────────────────── */
+.tier-green {
+  border-color: rgba($green, 0.25);
+
+  .multiplier-value {
+    color: $green;
+    text-shadow: 0 0 8px $green-glow;
+  }
+
+  .progress-fill {
+    background: $green;
+  }
+
+  .multiplier-hint {
+    color: rgba($green, 0.6);
+  }
+}
+
+/* ── Tier: Dim (1×) ──────────────────────────── */
+.tier-dim {
+  .multiplier-value {
+    color: $dim;
+  }
+
+  .progress-fill {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* =========================================================
+   Keyframes
+   ========================================================= */
+@keyframes tier-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}

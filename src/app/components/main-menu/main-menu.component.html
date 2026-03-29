@@ -1,0 +1,38 @@
+<div class="menu-container">
+  <div class="menu-card">
+    <h1 class="menu-title">Memorina</h1>
+    <p class="menu-subtitle">Teste sua memória</p>
+
+    <div class="menu-actions">
+      <button
+        class="menu-btn menu-btn--start"
+        (click)="onStart()"
+        id="btn-start"
+      >
+        <span class="menu-btn__icon">▶</span>
+        <span class="menu-btn__label">Iniciar</span>
+      </button>
+
+      <button
+        class="menu-btn menu-btn--config"
+        (click)="openConfig()"
+        id="btn-configure"
+      >
+        <span class="menu-btn__icon">⚙</span>
+        <span class="menu-btn__label">Configurar</span>
+      </button>
+    </div>
+
+    <p class="menu-config-summary">
+      {{ config().cardsPerRow }} por fila · {{ config().totalPairs }} pares
+    </p>
+  </div>
+</div>
+
+@if (showConfig()) {
+  <app-config-modal
+    [config]="config()"
+    (save)="onConfigSave($event)"
+    (close)="closeConfig()"
+  />
+}
