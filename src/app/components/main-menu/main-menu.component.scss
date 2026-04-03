@@ -24,7 +24,7 @@ $border: rgba(108, 92, 231, 0.35);
 
 .menu-card {
   text-align: center;
-  padding: 48px 36px 40px;
+  padding: 40px 24px;
   border-radius: 20px;
   background: $surface;
   backdrop-filter: blur(16px);
@@ -38,7 +38,7 @@ $border: rgba(108, 92, 231, 0.35);
 /* ── Title ─────────────────────────────────────── */
 .menu-title {
   font-family: 'Press Start 2P', monospace;
-  font-size: 1.8rem;
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
   color: #fff;
   margin: 0 0 8px;
   text-shadow:

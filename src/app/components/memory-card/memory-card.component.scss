@@ -24,10 +24,12 @@ $shine: rgba(255, 255, 255, 0.55);
    Host element
    ========================================================= */
 :host {
-  display: inline-block;
-  width: $card-w;
-  height: $card-h;
+  display: block;
+  width: 100%;
+  aspect-ratio: 100 / 130;
+  max-width: $card-w;
   perspective: 900px;
+  container-type: inline-size;
 
   /* hover: lift + shadow only, NO rotateY to avoid conflicting with flip */
   &:not(.disabled):not(.matched):not(.flipped) .card-wrapper:hover .card-inner {
@@ -134,7 +136,7 @@ $shine: rgba(255, 255, 255, 0.55);
   /* center logo */
   &__logo {
     position: relative;
-    font-size: 2.2rem;
+    font-size: clamp(1.2rem, 30cqi, 2.2rem);
     color: rgba(255, 255, 255, 0.75);
     text-shadow: 0 0 14px rgba(162, 155, 254, 0.8);
     animation: logo-pulse 3s ease-in-out infinite;
@@ -154,7 +156,7 @@ $shine: rgba(255, 255, 255, 0.55);
   justify-content: center;
 
   &__content {
-    font-size: 2.8rem;
+    font-size: clamp(1.5rem, 40cqi, 2.8rem);
     line-height: 1;
     user-select: none;
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));

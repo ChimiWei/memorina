@@ -45,7 +45,7 @@
 
         <div
           class="board"
-          [style.grid-template-columns]="'repeat(' + config().cardsPerRow + ', 100px)'"
+          [style.--cards-per-row]="config().cardsPerRow"
         >
           @for (card of cards(); track card.id) {
             <app-memory-card
