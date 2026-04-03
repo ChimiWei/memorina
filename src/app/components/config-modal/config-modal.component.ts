@@ -34,8 +34,8 @@ export class ConfigModalComponent implements OnInit {
   readonly save = output<GameConfig>();
   readonly close = output<void>();
 
-  protected readonly totalPairs = signal(8);
-  protected readonly cardsPerRow = signal(4);
+  protected readonly totalPairs = signal(4);
+  protected readonly cardsPerRow = signal(2);
 
   protected readonly maxPairs = MAX_PAIRS;
   protected readonly minPairs = MIN_PAIRS;

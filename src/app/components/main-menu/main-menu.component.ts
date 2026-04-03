@@ -17,7 +17,7 @@ export class MainMenuComponent {
   readonly startGame = output<GameConfig>();
 
   protected readonly showConfig = signal(false);
-  protected readonly config = signal<GameConfig>({ cardsPerRow: 4, totalPairs: 8 });
+  protected readonly config = signal<GameConfig>({ cardsPerRow: 4, totalPairs: 2 });
 
   openConfig(): void {
     this.showConfig.set(true);
