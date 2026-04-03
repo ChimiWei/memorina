@@ -33,7 +33,7 @@ export class App {
   screen = signal<GameScreen>('menu');
   cards = signal<MemoryCard[]>([]);
   score = signal(0);
-  config = signal<GameConfig>({ cardsPerRow: 4, totalPairs: 8 });
+  config = signal<GameConfig>({ cardsPerRow: 2, totalPairs: 4 });
 
   elapsedSeconds = signal(0);
   lastMatchAt = signal(0);
