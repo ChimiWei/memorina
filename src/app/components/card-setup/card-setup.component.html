@@ -49,6 +49,28 @@
     }
   </div>
 
+  <div>
+    <input
+      #multiFileInput
+      dataUrl;
+      type="file"
+      accept="image/*"
+      class="sr-only"
+      [attr.aria-label]="'Upload todas as imagens.'"
+      (change)="onMultiFileSelected($event)"
+      multiple
+    />
+
+    <button 
+      [disabled]="allFilled()"
+      class="start-btn"
+      (click)="onMultiFileClick(multiFileInput)"
+    >
+      <span>Selecionar todos</span>
+    </button>
+
+  </div>
+
   <div class="setup-footer">
     <button
       class="start-btn"

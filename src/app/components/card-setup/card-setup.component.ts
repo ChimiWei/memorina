@@ -77,6 +77,42 @@ export class CardSetupComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
+  onMultiFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const fileArray = input?.files;
+
+    if(fileArray == null) return
+
+    for (let i = 0; i < fileArray.length; i++) {
+      const file = fileArray[i];
+      if (!file || !file.type.startsWith('image/')) return;
+      
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        this.images.update(imgs => {
+          const copy = [...imgs];
+          let image = copy[i]
+
+          if(image !== undefined){
+            copy[i] = dataUrl;
+          }
+          
+          return copy;
+        });
+      };
+      reader.readAsDataURL(file);
+    } 
+
+
+    
+
+  }
+
+  onMultiFileClick(fileInput: HTMLInputElement): void {
+    fileInput.click()
+  }
+
   onStart(): void {
     const imgs = this.images();
     if (this.allFilled()) {
