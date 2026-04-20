@@ -26,7 +26,7 @@ jobs:
         working-directory: src
 
       - name: Upload to VPS
-        uses: appleboy/scp-action@v1.0.1
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
