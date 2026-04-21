@@ -25,15 +25,6 @@
           
           <div class="score-container-group">
             <app-score-display [score]="score()" class="score-display-wrapper" />
-            @if (isGameOver()) {
-              <button
-                class="restart-btn"
-                (click)="onRestart()"
-                aria-label="Reiniciar o jogo"
-              >
-                <span class="restart-btn__icon">↻</span>
-              </button>
-            }
           </div>
           
           <app-game-timer
@@ -54,6 +45,18 @@
               (cardClick)="onCardClick($event)"
             />
           }
+        </div>
+        
+        <div>
+          @if (isGameOver()) {
+              <button
+                class="restart-btn"
+                (click)="onRestart()"
+                aria-label="Reiniciar o jogo"
+              >
+                <span class="restart-btn__icon">↻</span>
+              </button>
+            }
         </div>
 
         <div class="board-footer">
