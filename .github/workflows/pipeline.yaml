@@ -24,13 +24,12 @@ jobs:
       - name: Build Angular
         run: npm run build
         working-directory: src
-        
+
       - name: Upload to VPS
         uses: appleboy/scp-action@v1
-        working-directory: src
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "src/dist/memorina/*"
+          source: "dist/memorina/*"
           target: "/var/www/memorina"
