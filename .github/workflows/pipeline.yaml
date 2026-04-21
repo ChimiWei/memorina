@@ -24,18 +24,10 @@ jobs:
       - name: Build Angular
         run: npm run build
         working-directory: src
-
-      - name: Debug SSH key presence
-        run: |
-          if [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
-            echo "❌ SSH KEY IS EMPTY"
-            exit 1
-          else
-            echo "✅ SSH KEY IS PRESENT"
-          fi
-
+        
       - name: Upload to VPS
         uses: appleboy/scp-action@v1
+        working-directory: src
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
