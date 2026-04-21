@@ -33,3 +33,4 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "dist/memorina/browser/*"
           target: "/var/www/memorina/browser"
+          strip_components: 3
