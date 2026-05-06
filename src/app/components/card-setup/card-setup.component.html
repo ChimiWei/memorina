@@ -52,7 +52,6 @@
   <div>
     <input
       #multiFileInput
-      dataUrl;
       type="file"
       accept="image/*"
       class="sr-only"
@@ -62,19 +61,27 @@
     />
 
     <button 
-      [disabled]="allFilled()"
+      [disabled]="allFilled() || isUploading()"
       class="start-btn"
       (click)="onMultiFileClick(multiFileInput)"
     >
-      <span>Selecionar todos</span>
+      @if (isUploading()) {
+        <span>Enviando...</span>
+      } @else {
+        <span>Selecionar todos</span>
+      }
     </button>
+    
+    @if (uploadError()) {
+      <p class="error-msg" role="alert" style="color: #e74c3c; font-size: 0.75rem; margin-top: 10px; text-align: center;">{{ uploadError() }}</p>
+    }
 
   </div>
 
   <div class="setup-footer">
     <button
       class="start-btn"
-      [disabled]="!allFilled()"
+      [disabled]="!allFilled() || isUploading()"
       (click)="onStart()"
       id="btn-start-game"
     >
@@ -86,3 +93,12 @@
     </p>
   </div>
 </div>
+
+@if (showMediaLibrary()) {
+  <app-media-library
+    [mode]="mediaLibraryMode()"
+    [maxSelection]="mediaLibraryMax()"
+    (imagesSelected)="onMediaImagesSelected($event)"
+    (closed)="onMediaLibraryClosed()"
+  />
+}

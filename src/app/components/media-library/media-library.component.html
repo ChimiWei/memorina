@@ -1,0 +1,171 @@
+<div
+  class="media-overlay"
+  (click)="close()"
+  (keydown.escape)="close()"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Biblioteca de Mídia"
+>
+  <div class="media-dialog" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="media-header">
+      <h2 class="media-title" id="media-dialog-title">Biblioteca de Mídia</h2>
+      <button
+        class="close-btn"
+        (click)="close()"
+        aria-label="Fechar biblioteca de mídia"
+        id="btn-close-media"
+        type="button"
+      >✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="media-tabs" role="tablist">
+      <button
+        class="tab"
+        [class.tab--active]="activeTab() === 'upload'"
+        (click)="setTab('upload')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'upload'"
+        id="tab-upload"
+        type="button"
+      >📤 Selecionar do computador</button>
+      <button
+        class="tab"
+        [class.tab--active]="activeTab() === 'gallery'"
+        (click)="setTab('gallery')"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'gallery'"
+        id="tab-gallery"
+        type="button"
+      >🖼️ Meus Uploads</button>
+    </div>
+
+    <!-- Content -->
+    <div class="media-content">
+      @if (errorMessage(); as error) {
+        <p class="error-msg" role="alert">{{ error }}</p>
+      }
+
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        class="sr-only"
+        multiple
+        (change)="onFileInputChange($event)"
+        aria-label="Selecionar arquivos de imagem"
+      />
+
+      @if (activeTab() === 'upload') {
+        <!-- Upload Tab -->
+        <div
+          class="drop-zone"
+          [class.drop-zone--active]="isDragOver()"
+          [class.drop-zone--uploading]="isUploading()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          @if (isUploading()) {
+            <div class="drop-zone__spinner" aria-label="Enviando imagens...">
+              <span class="spinner"></span>
+              <p class="drop-zone__text">Enviando...</p>
+            </div>
+          } @else {
+            <span class="drop-zone__icon">📁</span>
+            <p class="drop-zone__text">
+              Arraste imagens aqui ou
+            </p>
+            <button
+              class="browse-btn"
+              (click)="onUploadClick()"
+              type="button"
+              id="btn-browse-files"
+            >Escolher arquivos</button>
+            <p class="drop-zone__hint">JPEG, PNG, GIF — máx. 10MB por arquivo</p>
+          }
+        </div>
+      }
+
+      @if (activeTab() === 'gallery') {
+        <!-- Gallery Tab -->
+        <div class="gallery-grid">
+          <!-- Upload Card -->
+          <button
+            class="upload-card"
+            (click)="onUploadClick()"
+            [disabled]="isUploading()"
+            type="button"
+            aria-label="Fazer upload de imagens"
+          >
+            @if (isUploading()) {
+              <span class="spinner"></span>
+              <span class="upload-card__text">Enviando...</span>
+            } @else {
+              <span class="upload-card__icon">📁</span>
+              <span class="upload-card__text">Fazer Upload</span>
+            }
+          </button>
+
+          <!-- Gallery Items -->
+          @if (loading()) {
+            <div class="gallery-loading" style="grid-column: span 2;">
+              <span class="spinner"></span>
+              <p>Carregando...</p>
+            </div>
+          } @else {
+            @for (img of images(); track img.id) {
+              <button
+                class="gallery-item"
+                [class.gallery-item--selected]="isSelected(img.id)"
+                (click)="toggleSelection(img)"
+                [attr.aria-label]="(isSelected(img.id) ? 'Desmarcar ' : 'Selecionar ') + img.original_filename"
+                type="button"
+              >
+                <img
+                  class="gallery-item__img"
+                  [src]="img.url"
+                  [alt]="img.original_filename"
+                  loading="lazy"
+                />
+                <div class="gallery-item__overlay">
+                  @if (mode() === 'multi') {
+                    <span class="gallery-item__select-icon">
+                      {{ isSelected(img.id) ? '✓' : '+' }}
+                    </span>
+                  } @else {
+                    <span class="gallery-item__select">Selecionar</span>
+                  }
+                </div>
+                <button
+                  class="gallery-item__delete"
+                  (click)="deleteImage($event, img)"
+                  [attr.aria-label]="'Excluir ' + img.original_filename"
+                  type="button"
+                >🗑️</button>
+              </button>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Footer for Multi-Select (visible on gallery tab or if selection exists) -->
+    @if (mode() === 'multi' && (activeTab() === 'gallery' || selectedImageIds().size > 0)) {
+      <div class="media-footer">
+        <span class="selection-count">
+          {{ selectedImageIds().size }} / {{ maxSelection() }} selecionados
+        </span>
+        <button
+          class="confirm-btn"
+          [disabled]="selectedImageIds().size === 0"
+          (click)="confirmSelection()"
+          type="button"
+        >
+          Confirmar
+        </button>
+      </div>
+    }
+  </div>
+</div>

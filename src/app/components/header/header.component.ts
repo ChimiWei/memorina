@@ -1,6 +1,7 @@
-import { Component, HostListener, signal, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, HostListener, signal, AfterViewInit, ElementRef, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
  
 interface NavItem {
   label: string;
@@ -16,6 +17,18 @@ interface NavItem {
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+   private authService = inject(AuthService);
+   user = this.authService.currentUser;
+
+   userInitials = computed(() => {
+     const u = this.user();
+     if (!u || !u.name) return '?';
+     return u.name.charAt(0).toUpperCase();
+   });
+
+   logout() {
+     this.authService.logout();
+   }
    constructor(private el: ElementRef) {}
 
   private updateHeight() {

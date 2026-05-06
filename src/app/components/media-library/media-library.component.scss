@@ -1,0 +1,346 @@
+/* =========================================================
+   Media Library Dialog
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$accent: #6c5ce7;
+$accent-light: #a29bfe;
+$danger: #e74c3c;
+$success: #2ecc71;
+$radius: 14px;
+
+/* ── sr-only ────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Overlay ────────────────────────────────── */
+.media-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  animation: overlay-fade-in 200ms ease-out;
+}
+
+/* ── Dialog ─────────────────────────────────── */
+.media-dialog {
+  background: linear-gradient(145deg, #1a1044 0%, #0d0a2a 100%);
+  border: 1px solid rgba($accent-light, 0.2);
+  border-radius: $radius;
+  width: min(95vw, 700px);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba($accent, 0.15);
+  animation: dialog-slide-up 300ms ease-out;
+  overflow: hidden;
+}
+
+/* ── Header ─────────────────────────────────── */
+.media-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid rgba($accent-light, 0.1);
+}
+
+.media-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 0 10px rgba($accent-light, 0.5);
+}
+
+.close-btn {
+  all: unset;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 150ms ease, background 150ms ease;
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-light;
+    outline-offset: 2px;
+  }
+}
+
+/* ── Tabs ──────────────────────────────────── */
+.media-tabs {
+  display: flex;
+  padding: 0 24px;
+  gap: 8px;
+  border-bottom: 1px solid rgba($accent-light, 0.1);
+}
+
+.tab {
+  all: unset;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 16px 12px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  &--active {
+    color: #fff;
+    border-bottom-color: $accent-light;
+  }
+}
+
+/* ── Content ───────────────────────────────── */
+.media-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* ── Drop Zone ─────────────────────────────── */
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 64px 24px;
+  border: 2px dashed rgba($accent-light, 0.25);
+  border-radius: $radius;
+  background: rgba($accent, 0.04);
+  cursor: pointer;
+  transition: border-color 200ms ease, background 200ms ease;
+
+  &--active {
+    border-color: $accent-light;
+    background: rgba($accent, 0.12);
+  }
+
+  &--uploading {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &__icon {
+    font-size: 3rem;
+  }
+
+  &__text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.browse-btn {
+  all: unset;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  padding: 14px 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, $accent, darken($accent, 8%));
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba($accent, 0.35);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba($accent, 0.5);
+  }
+}
+
+/* ── Gallery Grid ──────────────────────────── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.upload-card {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 2px dashed rgba($accent-light, 0.4);
+  background: rgba($accent, 0.05);
+  cursor: pointer;
+  transition: background 200ms ease, border-color 200ms ease;
+
+  &:hover:not(:disabled) {
+    background: rgba($accent, 0.15);
+    border-color: $accent-light;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+  }
+
+  &__icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  &__text {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.gallery-item {
+  all: unset;
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid rgba($accent-light, 0.15);
+  transition: border-color 200ms ease, transform 150ms ease;
+
+  &:hover {
+    border-color: $accent-light;
+    transform: scale(1.03);
+  }
+
+  &--selected {
+    border-color: $success;
+    box-shadow: 0 0 15px rgba($success, 0.5);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  &:hover &__overlay,
+  &--selected &__overlay {
+    opacity: 1;
+  }
+
+  &__select-icon {
+    width: 32px;
+    height: 32px;
+    background: $accent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  &--selected &__select-icon {
+    background: $success;
+  }
+
+  &__delete {
+    all: unset;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 200ms ease;
+
+    &:hover { background: $danger; }
+  }
+
+  &:hover &__delete { opacity: 1; }
+}
+
+.error-msg {
+  color: $danger;
+  font-size: 0.8rem;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* ── Footer ────────────────────────────────── */
+.media-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba($accent-light, 0.1);
+}
+
+.selection-count {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.confirm-btn {
+  all: unset;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  padding: 12px 24px;
+  background: $accent;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.5; }
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba($accent-light, 0.2);
+  border-top-color: $accent-light;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes overlay-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialog-slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

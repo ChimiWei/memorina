@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.content {
+  animation: content-fade-in 400ms ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px 0;
+  width: 100%;
+  max-width: 800px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+      "back timer"
+      "score score";
+    gap: 16px;
+  }
+}
+
+.back-btn {
+  all: unset;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease, transform 100ms ease;
+  justify-self: start;
+
+  @media (max-width: 600px) {
+    grid-area: back;
+  }
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #a29bfe;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateX(0);
+  }
+}
+
+.game-timer-wrapper {
+  justify-self: end;
+
+  @media (max-width: 600px) {
+    grid-area: timer;
+  }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(var(--cards-per-row, 4), minmax(0, 100px));
+  gap: 16px;
+  padding: 24px 16px 32px;
+  place-content: center;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    gap: 8px;
+    padding: 16px 8px 24px;
+  }
+}
+
+.board-footer {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 32px;
+}
+
+@keyframes content-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.score-container-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  animation: content-fade-in 300ms ease-out;
+
+  @media (max-width: 600px) {
+    grid-area: score;
+  }
+}
+
+.restart-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  border-radius: 12px;
+  background: rgb(28 21 80 / 40%);
+  border: 1px solid rgba(162, 155, 254, 0.5);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+
+  &:hover {
+    transform: scale(1.05) translateY(-2px);
+    background: rgba(108, 92, 231, 0.6);
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.45);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #a29bfe;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &__icon {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+}

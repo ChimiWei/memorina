@@ -2,7 +2,7 @@
   <div class="header__inner">
 
     <!-- Logo -->
-    <a href="#" class="header__logo">
+    <a routerLink="/" class="header__logo">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
         <rect width="28" height="28" rx="8" fill="#0F172A"/>
         <path d="M8 20L14 8L20 20" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -48,8 +48,17 @@
 
     <!-- Actions -->
     <div class="header__actions">
-      <a href="#" class="header__btn header__btn--ghost">Entrar</a>
-      <a href="#" class="header__btn header__btn--primary">Criar conta</a>
+      @if (user()) {
+        <div class="header__user">
+          <div class="header__user-avatar" [title]="user()?.name">
+            {{ userInitials() }}
+          </div>
+          <button (click)="logout()" class="header__btn header__btn--ghost header__btn--logout">Sair</button>
+        </div>
+      } @else {
+        <a routerLink="/login" class="header__btn header__btn--ghost">Entrar</a>
+        <a routerLink="/register" class="header__btn header__btn--primary">Criar conta</a>
+      }
     </div>
 
     <!-- Mobile Toggle -->
@@ -94,9 +103,19 @@
         }
       </nav>
       <div class="header__mobile-actions">
-        <a href="#" class="header__btn header__btn--ghost header__btn--full">Entrar</a>
-        <a href="#" class="header__btn header__btn--primary header__btn--full">Criar Conta</a>
+        @if (user()) {
+          <div class="header__mobile-user">
+            <div class="header__user-avatar" [title]="user()?.name">
+              {{ userInitials() }}
+            </div>
+            <span class="header__mobile-user-name">{{ user()?.name }}</span>
+          </div>
+          <button (click)="logout()" class="header__btn header__btn--ghost header__btn--full">Sair</button>
+        } @else {
+          <a routerLink="/login" class="header__btn header__btn--ghost header__btn--full">Entrar</a>
+          <a routerLink="/register" class="header__btn header__btn--primary header__btn--full">Criar Conta</a>
+        }
       </div>
     </div>
   }
-</header>
+</header>

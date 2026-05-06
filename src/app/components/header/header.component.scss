@@ -174,7 +174,7 @@ $header-height-scrolled: 56px;
   }
 }
 
-// ─── Actions ─────────────────────────────────────────────────────────────────
+// ─── Actions & User ────────────────────────────────────────────────────────────
 
 .header__actions {
   display: flex;
@@ -183,6 +183,29 @@ $header-height-scrolled: 56px;
   margin-left: auto;
 
   @media (max-width: 768px) { display: none; }
+}
+
+.header__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: $color-accent;
+  color: #302651;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-sans;
+  font-weight: 700;
+  font-size: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: default;
 }
 
 .header__btn {
@@ -221,6 +244,14 @@ $header-height-scrolled: 56px;
       background: $color-accent-hover;
       color: #ffffff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    }
+  }
+
+  &--logout {
+    color: #ffb4b4;
+    &:hover {
+      color: #fff;
+      background: rgba(255, 59, 48, 0.15);
     }
   }
 
@@ -312,6 +343,22 @@ $header-height-scrolled: 56px;
     color: $color-text-primary;
     background: rgba(15, 23, 42, 0.04);
   }
+}
+
+.header__mobile-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid $color-border;
+}
+
+.header__mobile-user-name {
+  font-family: $font-sans;
+  font-size: 15px;
+  font-weight: 500;
+  color: $color-text-primary;
 }
 
 .header__mobile-actions {

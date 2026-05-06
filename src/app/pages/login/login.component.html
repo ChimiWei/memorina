@@ -1,0 +1,66 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h1 class="auth-title">Bem-vindo(a) de volta</h1>
+    <p class="auth-subtitle">Faça login para continuar</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <span class="error-msg">Informe um e-mail válido.</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          placeholder="Sua senha"
+          autocomplete="current-password"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        />
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <span class="error-msg">A senha deve ter no mínimo 6 caracteres.</span>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error-banner">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="loader"></span>
+        } @else {
+          Entrar
+        }
+      </button>
+
+      <div class="divider">
+        <span>ou</span>
+      </div>
+
+      <div #googleBtn class="google-btn-container"></div>
+
+      <div class="auth-footer">
+        Ainda não tem conta? <a routerLink="/register">Cadastre-se</a>
+      </div>
+      
+      <div class="auth-footer-back">
+        <a routerLink="/">← Voltar ao jogo</a>
+      </div>
+    </form>
+  </div>
+</div>
