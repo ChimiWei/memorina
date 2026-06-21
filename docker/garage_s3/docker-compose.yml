@@ -1,0 +1,48 @@
+services:
+  garage:
+    container_name: garage
+    image: dxflrs/garage:b6b18427a5fc9b5b7540cf6d0843afd5cf7f9b56
+
+    environment:
+    - GARAGE_RPC_SECRET=${GARAGE_RPC_SECRET}
+    - GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
+    
+    ports:
+      - "3900:3900"
+      - "3901:3901"
+      - "3902:3902"
+      - "3903:3903"
+
+    volumes:
+      - ./garage.toml:/etc/garage.toml
+      - ./meta:/var/lib/garage/meta
+      - ./data:/var/lib/garage/data
+
+    networks:
+      - garage-network
+
+  garage-ui:
+    image: noooste/garage-ui:latest
+    container_name: garage-ui
+  
+    volumes:
+      - ./config.yaml:/app/config.yaml
+  
+    depends_on:
+      garage:
+        condition: service_started
+        
+    restart: on-failure:5
+
+    ports:
+      - "3904:8080"
+
+    environment:
+      - GARAGE_UI_GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
+
+    networks:
+      - garage-network
+
+networks:
+  garage-network:
+    driver: bridge
