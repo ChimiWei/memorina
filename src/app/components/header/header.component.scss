@@ -191,6 +191,17 @@ $header-height-scrolled: 56px;
   gap: 12px;
 }
 
+.header__user-name {
+  font-family: $font-sans;
+  font-size: 14px;
+  font-weight: 500;
+  color: $color-text-primary;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .header__user-avatar {
   width: 36px;
   height: 36px;

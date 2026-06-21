@@ -1,12 +1,11 @@
 <div class="auth-container">
   <div class="auth-card">
     <h1 class="auth-title">Criar Conta</h1>
-    <p class="auth-subtitle">Junte-se a nós para a melhor experiência</p>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
       
       <div class="form-group">
-        <label for="name">Nome Completo</label>
+        <label for="name">Nome</label>
         <input
           type="text"
           id="name"
@@ -45,8 +44,31 @@
           autocomplete="new-password"
           [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
         />
-        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
-          <span class="error-msg">A senha deve ter no mínimo 6 caracteres.</span>
+        @if (registerForm.get('password')?.touched) {
+          @if (registerForm.get('password')?.hasError('required')) {
+            <span class="error-msg">A senha é obrigatória.</span>
+          } @else if (registerForm.get('password')?.hasError('minlength')) {
+            <span class="error-msg">A senha deve ter no mínimo 6 caracteres.</span>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar senha</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="Confirme sua senha"
+          autocomplete="new-password"
+          [class.invalid]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched"
+        />
+        @if (registerForm.get('confirmPassword')?.touched) {
+          @if (registerForm.get('confirmPassword')?.hasError('required')) {
+            <span class="error-msg">A confirmação da senha é obrigatória.</span>
+          } @else if (registerForm.hasError('passwordMismatch')) {
+            <span class="error-msg">As senhas não coincidem.</span>
+          }
         }
       </div>
 

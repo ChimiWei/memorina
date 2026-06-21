@@ -104,6 +104,22 @@ $border: rgba(108, 92, 231, 0.35);
     }
   }
 
+  /* Setup button (Select Photos) */
+  &--setup {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
   /* Configure button */
   &--config {
     background: rgba(255, 255, 255, 0.06);

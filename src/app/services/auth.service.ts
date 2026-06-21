@@ -1,6 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -49,7 +48,6 @@ export interface GameConfig {
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private router = inject(Router);
   // Replace with environment based config where needed
   private apiUrl = '/api';
 
@@ -127,6 +125,14 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/reset-password`, { token, password });
+  }
+
   getPublicConfig(): Observable<PublicConfig> {
     return this.http.get<PublicConfig>(`${this.apiUrl}/config/public`);
   }
@@ -146,7 +152,7 @@ export class AuthService {
     localStorage.removeItem('memorina_token');
     this.currentUser.set(null);
     this.loadLocalConfig(); // reverts back to whatever is saved locally for anonymous
-    this.router.navigate(['/']);
+    window.location.href = '/';
   }
 
   private handleAuthSuccess(res: AuthResponse) {

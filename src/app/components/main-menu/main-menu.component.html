@@ -4,13 +4,23 @@
     <p class="menu-subtitle">Teste sua memória</p>
 
     <div class="menu-actions">
+      @if (canDirectStart()) {
+        <button
+          class="menu-btn menu-btn--start"
+          (click)="onDirectStart()"
+          id="btn-start"
+        >
+          <span class="menu-btn__icon">▶</span>
+          <span class="menu-btn__label">Iniciar</span>
+        </button>
+      }
+
       <button
-        class="menu-btn menu-btn--start"
-        (click)="onStart()"
-        id="btn-start"
+        class="menu-btn menu-btn--setup"
+        (click)="onSelectPhotos()"
+        id="btn-select-photos"
       >
-        <span class="menu-btn__icon">▶</span>
-        <span class="menu-btn__label">Iniciar</span>
+        <span class="menu-btn__label">Selecionar fotos</span>
       </button>
 
       <button

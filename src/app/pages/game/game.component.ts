@@ -40,10 +40,17 @@ export class GameComponent {
   private flipped = signal<MemoryCard[]>([]);
   private checking = signal(false);
 
-  /* ── Menu → Setup ────────────────────────────── */
+  /* ── Menu → Setup/Game ────────────────────────── */
   onMenuStart(cfg: GameConfig): void {
     this.config.set(cfg);
     this.screen.set('setup');
+  }
+
+  onDirectStart(data: { config: GameConfig; images: string[] }): void {
+    this.config.set(data.config);
+    this.currentImages.set(data.images);
+    this.startNewGame(data.images);
+    this.screen.set('playing');
   }
 
   /* ── Setup → Game ────────────────────────────── */

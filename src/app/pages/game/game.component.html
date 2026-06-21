@@ -3,7 +3,10 @@
 <main class="main">
   @switch (screen()) {
     @case ('menu') {
-      <app-main-menu (startGame)="onMenuStart($event)" />
+      <app-main-menu 
+        (startGame)="onMenuStart($event)" 
+        (directStart)="onDirectStart($event)"
+      />
     }
     @case ('setup') {
       <app-card-setup
