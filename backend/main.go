@@ -39,26 +39,26 @@ func main() {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
-	// Initialize MinIO storage
-	minioEndpoint := os.Getenv("MINIO_HOST")
-	minioAccessKey := os.Getenv("MINIO_USER")
-	minioSecretKey := os.Getenv("MINIO_PASSWORD")
-	minioBucket := os.Getenv("MINIO_BUCKET")
-	minioUseSSL := os.Getenv("MINIO_USE_SSL") == "true"
+	// Initialize Garage S3 storage
+	garageEndpoint := os.Getenv("GARAGE_HOST")
+	garageAccessKey := os.Getenv("GARAGE_USER")
+	garageSecretKey := os.Getenv("GARAGE_PASSWORD")
+	garageBucket := os.Getenv("GARAGE_BUCKET")
+	garageUseSSL := os.Getenv("GARAGE_USE_SSL") == "true"
 
-	if minioEndpoint == "" || minioAccessKey == "" || minioSecretKey == "" {
-		log.Fatal("MinIO configuration is incomplete. Set MINIO_HOST, MINIO_USER, and MINIO_PASSWORD.")
+	if garageEndpoint == "" || garageAccessKey == "" || garageSecretKey == "" {
+		log.Fatal("Garage configuration is incomplete. Set GARAGE_HOST, GARAGE_USER, and GARAGE_PASSWORD.")
 	}
-	if minioBucket == "" {
-		minioBucket = "memorina"
+	if garageBucket == "" {
+		garageBucket = "memorina"
 	}
 
-	storage, err := images.NewMinIOStorage(minioEndpoint, minioAccessKey, minioSecretKey, minioBucket, minioUseSSL)
+	storage, err := images.NewGarageStorage(garageEndpoint, garageAccessKey, garageSecretKey, garageBucket, garageUseSSL)
 	if err != nil {
-		log.Fatalf("Failed to initialize MinIO storage: %v", err)
+		log.Fatalf("Failed to initialize Garage S3 storage: %v", err)
 	}
 	images.Storage = storage
-	fmt.Printf("MinIO connected: %s (bucket: %s)\n", minioEndpoint, minioBucket)
+	fmt.Printf("Garage S3 connected: %s (bucket: %s)\n", garageEndpoint, garageBucket)
 
 	// Define Routes using Go 1.22+ method matching
 	http.HandleFunc("GET /ping", pingHandler)
@@ -66,6 +66,9 @@ func main() {
 	http.HandleFunc("POST /login", auth.LoginHandler)
 	http.HandleFunc("POST /login/provider", auth.ProviderLoginHandler)
 	http.HandleFunc("POST /logout", auth.LogoutHandler)
+	http.HandleFunc("POST /forgot-password", auth.ForgotPasswordHandler)
+	http.HandleFunc("POST /reset-password", auth.ResetPasswordHandler)
+	http.HandleFunc("GET /config/public", auth.GetPublicConfigHandler)
 
 	http.HandleFunc("GET /user/config", auth.AuthMiddleware(auth.GetConfigHandler))
 	http.HandleFunc("POST /user/config", auth.AuthMiddleware(auth.SaveConfigHandler))

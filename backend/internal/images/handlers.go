@@ -26,10 +26,10 @@ const (
 	jpegQuality   = 85       // JPEG output quality (0-100)
 )
 
-var Storage *MinIOStorage
+var Storage *GarageStorage
 
 // UploadHandler handles POST /images
-// Receives a multipart form with a "file" field, compresses and stores it in MinIO.
+// Receives a multipart form with a "file" field, compresses and stores it in Garage.
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(auth.UserIDKey).(int)
 	if !ok {
@@ -80,9 +80,9 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	// Generate unique stored filename inside a user-specific folder
 	storedFilename := fmt.Sprintf("user_%d/%d.jpg", userID, time.Now().UnixNano())
 
-	// Upload to MinIO
+	// Upload to Garage
 	if err := Storage.Upload(r.Context(), storedFilename, &buf, int64(buf.Len()), "image/jpeg"); err != nil {
-		log.Printf("[Upload] MinIO upload error: %v\n", err)
+		log.Printf("[Upload] Garage upload error: %v\n", err)
 		http.Error(w, "Failed to save file", http.StatusInternalServerError)
 		return
 	}
@@ -93,7 +93,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	result, err := database.DB.Exec(query, userID, header.Filename, storedFilename, fileSize)
 	if err != nil {
 		log.Printf("[Upload] DB insert error: %v\n", err)
-		// Clean up the MinIO object since DB insert failed
+		// Clean up the Garage object since DB insert failed
 		_ = Storage.Delete(r.Context(), storedFilename)
 		http.Error(w, "Failed to save image metadata", http.StatusInternalServerError)
 		return
@@ -123,7 +123,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ListHandler handles GET /images
-// Returns all images belonging to the authenticated user with presigned MinIO URLs.
+// Returns all images belonging to the authenticated user with presigned Garage URLs.
 func ListHandler(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(auth.UserIDKey).(int)
 	if !ok {
@@ -166,7 +166,7 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteHandler handles DELETE /images/{id}
-// Deletes an image from MinIO and the database.
+// Deletes an image from Garage and the database.
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(auth.UserIDKey).(int)
 	if !ok {
@@ -196,9 +196,9 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Delete from MinIO
+	// Delete from Garage
 	if err := Storage.Delete(r.Context(), storedFilename); err != nil {
-		log.Printf("[DeleteImage] MinIO delete error: %v\n", err)
+		log.Printf("[DeleteImage] Garage delete error: %v\n", err)
 		// Continue to delete DB record even if object removal fails
 	}
 

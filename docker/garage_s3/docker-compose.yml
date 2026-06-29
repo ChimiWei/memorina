@@ -1,11 +1,14 @@
 services:
   garage:
     container_name: garage
-    image: dxflrs/garage:b6b18427a5fc9b5b7540cf6d0843afd5cf7f9b56
+    image: dxflrs/garage:v2.3.0
 
     environment:
     - GARAGE_RPC_SECRET=${GARAGE_RPC_SECRET}
     - GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
+    - GARAGE_DEFAULT_ACCESS_KEY=${GARAGE_DEFAULT_ACCESS_KEY}
+    - GARAGE_DEFAULT_SECRET_KEY=${GARAGE_DEFAULT_SECRET_KEY}
+    - GARAGE_DEFAULT_BUCKET=${GARAGE_DEFAULT_BUCKET}
     
     ports:
       - "3900:3900"
@@ -18,8 +21,12 @@ services:
       - ./meta:/var/lib/garage/meta
       - ./data:/var/lib/garage/data
 
+    command: >
+      /garage server --single-node --default-bucket
+
+      
     networks:
-      - garage-network
+      - shared-network
 
   garage-ui:
     image: noooste/garage-ui:latest
@@ -41,8 +48,8 @@ services:
       - GARAGE_UI_GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
 
     networks:
-      - garage-network
+      - shared-network
 
 networks:
-  garage-network:
-    driver: bridge
+  shared-network:
+    external: true

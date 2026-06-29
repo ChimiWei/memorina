@@ -42,3 +42,13 @@ type ProviderLoginRequest struct {
 	// In a real app, you'd send an OAuth token from the frontend and verify it here instead of trusting these fields directly.
 	Token      string `json:"token,omitempty"`
 }
+// ForgotPasswordRequest holds the email to send the reset link to
+type ForgotPasswordRequest struct {
+	Email string `json:"email"`
+}
+
+// ResetPasswordRequest holds the token and the new password
+type ResetPasswordRequest struct {
+	Token    string `json:"token"`
+	Password string `json:"password"`
+}

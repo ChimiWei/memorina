@@ -43,3 +43,9 @@ __screenshots__/
 Thumbs.db
 
 .env
+
+*.log
+*.exe
+
+docker/garage_s3/data
+docker/garage_s3/meta

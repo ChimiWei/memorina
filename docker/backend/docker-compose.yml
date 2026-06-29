@@ -1,0 +1,39 @@
+services:
+  memorina-backend:
+    container_name: memorina-backend
+    image: chimiwei/memorina-backend
+    environment:
+      # Database configuration
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_HOST: "${DB_HOST}"
+      DB_PORT: "${DB_PORT}"
+      DB_NAME: "${DB_NAME}"
+
+      # JWT Secret Key
+      JWT_SECRET: "${JWT_SECRET}"
+
+      # Port the server will run on
+      PORT: "${PORT}"
+
+      # Google OAuth
+      GOOGLE_OAUTH_CLIENT: "${GOOGLE_OAUTH_CLIENT}"
+      GOOGLE_OAUTH_SECRET: "${GOOGLE_OAUTH_SECRET}"
+
+      # Garage S3 Object Storage
+      GARAGE_HOST: "${GARAGE_HOST}"
+      GARAGE_USER: "${GARAGE_USER}"
+      GARAGE_PASSWORD: "${GARAGE_PASSWORD}"
+      GARAGE_BUCKET: "${GARAGE_BUCKET}"
+      GARAGE_USE_SSL: "${GARAGE_USE_SSL}"
+
+    ports:
+      - "${PORT}:${PORT}"
+    restart: unless-stopped
+
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    external: true

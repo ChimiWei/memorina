@@ -10,7 +10,10 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/api/idtoken"
 	"log"
+	"crypto/rand"
+	"encoding/hex"
 )
 
 func generateToken(userID int) (string, error) {
@@ -137,11 +140,29 @@ func ProviderLoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Provider == "" || req.ProviderID == "" || req.Email == "" {
-		http.Error(w, "Missing required provider fields", http.StatusBadRequest)
-		return
+		// If token is provided, we can skip these requirements as they will be filled from the token
+		if req.Token == "" {
+			http.Error(w, "Missing required provider fields", http.StatusBadRequest)
+			return
+		}
 	}
 
-	// TODO: Verify req.Token with the Provider's server (e.g., Google OAuth API) to ensure it's valid.
+	// 0. Verify req.Token with the Provider's server (e.g., Google OAuth API) to ensure it's valid.
+	if req.Provider == "google" && req.Token != "" {
+		clientID := os.Getenv("GOOGLE_OAUTH_CLIENT")
+		payload, err := idtoken.Validate(r.Context(), req.Token, clientID)
+		if err != nil {
+			log.Printf("[ProviderLogin] Invalid Google token: %v\n", err)
+			http.Error(w, "Invalid Google token", http.StatusUnauthorized)
+			return
+		}
+		// Trust verified data from the token
+		req.Email = payload.Claims["email"].(string)
+		if name, ok := payload.Claims["name"].(string); ok {
+			req.Name = name
+		}
+		req.ProviderID = payload.Subject
+	}
 
 	var userID int
 	// 1. Check if the provider account is already linked
@@ -219,4 +240,105 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "Logout successful",
 	})
+}
+
+func ForgotPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	var req ForgotPasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if req.Email == "" {
+		http.Error(w, "Email is required", http.StatusBadRequest)
+		return
+	}
+
+	// Check if user exists
+	var exists bool
+	err := database.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)", req.Email).Scan(&exists)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if !exists {
+		// Don't reveal if user exists or not for security, but return success
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"message": "If this email is registered, you will receive a reset link."})
+		return
+	}
+
+	// Generate token
+	tokenBytes := make([]byte, 32)
+	rand.Read(tokenBytes)
+	token := hex.EncodeToString(tokenBytes)
+
+	// Save token in DB
+	expiresAt := time.Now().Add(1 * time.Hour)
+	_, err = database.DB.Exec("INSERT INTO password_reset_tokens (email, token, expires_at) VALUES (?, ?, ?)", req.Email, token, expiresAt)
+	if err != nil {
+		log.Printf("[ForgotPassword] Failed to save token: %v\n", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Log the reset link (mocking email send)
+	// In production, this would send an actual email.
+	resetLink := "http://localhost:4200/reset-password?token=" + token
+	log.Printf("[ForgotPassword] Reset link for %s: %s\n", req.Email, resetLink)
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "If this email is registered, you will receive a reset link."})
+}
+
+func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	var req ResetPasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	if req.Token == "" || req.Password == "" {
+		http.Error(w, "Token and Password are required", http.StatusBadRequest)
+		return
+	}
+
+	// Validate token
+	var email string
+	var expiresAt time.Time
+	err := database.DB.QueryRow("SELECT email, expires_at FROM password_reset_tokens WHERE token = ?", req.Token).Scan(&email, &expiresAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if time.Now().After(expiresAt) {
+		http.Error(w, "Token has expired", http.StatusUnauthorized)
+		return
+	}
+
+	// Hash new password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Update password
+	_, err = database.DB.Exec("UPDATE users SET password_hash = ? WHERE email = ?", string(hashedPassword), email)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Invalidate token
+	database.DB.Exec("DELETE FROM password_reset_tokens WHERE token = ?", req.Token)
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Password reset successfully"})
 }

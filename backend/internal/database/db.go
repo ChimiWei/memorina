@@ -88,6 +88,22 @@ func createTables() error {
 		return err
 	}
 
+	queryResetTokens := `
+	CREATE TABLE IF NOT EXISTS password_reset_tokens (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		email VARCHAR(255) NOT NULL,
+		token VARCHAR(255) NOT NULL UNIQUE,
+		expires_at DATETIME NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		INDEX(token)
+	);`
+
+	_, err = DB.Exec(queryResetTokens)
+	if err != nil {
+		log.Printf("Error creating password_reset_tokens table: %v\n", err)
+		return err
+	}
+
 	fmt.Println("Database tables initialized successfully.")
 	return nil
 }

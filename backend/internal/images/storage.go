@@ -10,20 +10,21 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-// MinIOStorage stores files in a MinIO (S3-compatible) bucket
-type MinIOStorage struct {
+// GarageStorage stores files in a Garage S3 bucket
+type GarageStorage struct {
 	Client *minio.Client
 	Bucket string
 }
 
-// NewMinIOStorage initializes a MinIO client and ensures the bucket exists
-func NewMinIOStorage(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinIOStorage, error) {
+// NewGarageStorage initializes a Garage S3 client and ensures the bucket exists
+func NewGarageStorage(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*GarageStorage, error) {
 	client, err := minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
-		Secure: useSSL,
+		Creds:        credentials.NewStaticV4(accessKey, secretKey, ""),
+		Secure:       useSSL,
+		BucketLookup: minio.BucketLookupPath, // Force path-style lookup for Garage compatibility
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create MinIO client: %w", err)
+		return nil, fmt.Errorf("failed to create Garage S3 client: %w", err)
 	}
 
 	ctx := context.Background()
@@ -37,12 +38,12 @@ func NewMinIOStorage(endpoint, accessKey, secretKey, bucket string, useSSL bool)
 		}
 	}
 
-	return &MinIOStorage{Client: client, Bucket: bucket}, nil
+	return &GarageStorage{Client: client, Bucket: bucket}, nil
 }
 
-// Upload stores an object in MinIO
-func (ms *MinIOStorage) Upload(ctx context.Context, objectName string, data io.Reader, size int64, contentType string) error {
-	_, err := ms.Client.PutObject(ctx, ms.Bucket, objectName, data, size, minio.PutObjectOptions{
+// Upload stores an object in Garage
+func (gs *GarageStorage) Upload(ctx context.Context, objectName string, data io.Reader, size int64, contentType string) error {
+	_, err := gs.Client.PutObject(ctx, gs.Bucket, objectName, data, size, minio.PutObjectOptions{
 		ContentType: contentType,
 	})
 	if err != nil {
@@ -51,9 +52,9 @@ func (ms *MinIOStorage) Upload(ctx context.Context, objectName string, data io.R
 	return nil
 }
 
-// Delete removes an object from MinIO
-func (ms *MinIOStorage) Delete(ctx context.Context, objectName string) error {
-	err := ms.Client.RemoveObject(ctx, ms.Bucket, objectName, minio.RemoveObjectOptions{})
+// Delete removes an object from Garage
+func (gs *GarageStorage) Delete(ctx context.Context, objectName string) error {
+	err := gs.Client.RemoveObject(ctx, gs.Bucket, objectName, minio.RemoveObjectOptions{})
 	if err != nil {
 		return fmt.Errorf("failed to delete object %q: %w", objectName, err)
 	}
@@ -61,8 +62,8 @@ func (ms *MinIOStorage) Delete(ctx context.Context, objectName string) error {
 }
 
 // GetURL generates a presigned URL for reading an object (valid for 24 hours)
-func (ms *MinIOStorage) GetURL(ctx context.Context, objectName string) (string, error) {
-	url, err := ms.Client.PresignedGetObject(ctx, ms.Bucket, objectName, 24*time.Hour, nil)
+func (gs *GarageStorage) GetURL(ctx context.Context, objectName string) (string, error) {
+	url, err := gs.Client.PresignedGetObject(ctx, gs.Bucket, objectName, 24*time.Hour, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to generate presigned URL for %q: %w", objectName, err)
 	}

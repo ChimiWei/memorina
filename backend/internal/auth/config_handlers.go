@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"memorina-backend/internal/database"
 )
@@ -82,5 +83,14 @@ func SaveConfigHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "Config saved successfully",
+	})
+}
+
+func GetPublicConfigHandler(w http.ResponseWriter, r *http.Request) {
+	googleClientID := os.Getenv("GOOGLE_OAUTH_CLIENT")
+	
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"googleClientId": googleClientID,
 	})
 }
