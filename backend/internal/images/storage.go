@@ -69,3 +69,11 @@ func (gs *GarageStorage) GetURL(ctx context.Context, objectName string) (string,
 	}
 	return url.String(), nil
 }
+
+func (gs *GarageStorage) GetObject(ctx context.Context, objectName string) (*minio.Object, error) {
+	object, err := gs.Client.GetObject(ctx, gs.Bucket, objectName, minio.GetObjectOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get object %q: %w", objectName, err)
+	}
+	return object, nil
+}

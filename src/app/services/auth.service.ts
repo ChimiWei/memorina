@@ -1,7 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 export interface User {
   id: number;
@@ -120,9 +119,7 @@ export class AuthService {
   }
 
   register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
-      tap(res => this.handleAuthSuccess(res))
-    );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data);
   }
 
   forgotPassword(email: string): Observable<{ message: string }> {

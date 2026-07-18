@@ -54,7 +54,7 @@ export class RegisterComponent {
     this.authService.register(data).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/']); // redirect to game
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         this.isLoading.set(false);

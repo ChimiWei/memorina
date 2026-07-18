@@ -77,6 +77,7 @@ func main() {
 	http.HandleFunc("POST /images", auth.AuthMiddleware(images.UploadHandler))
 	http.HandleFunc("GET /images", auth.AuthMiddleware(images.ListHandler))
 	http.HandleFunc("DELETE /images/", auth.AuthMiddleware(images.DeleteHandler))
+	http.HandleFunc("GET /images/{path...}", auth.AuthMiddleware(images.ImageHandler()))
 
 	port := os.Getenv("PORT")
 	if port == "" {

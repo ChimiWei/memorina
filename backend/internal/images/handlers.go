@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"io"
 
 	"memorina-backend/internal/auth"
 	"memorina-backend/internal/database"
@@ -101,14 +102,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	imageID, _ := result.LastInsertId()
 
-	// Generate presigned URL for the response
-	url, err := Storage.GetURL(r.Context(), storedFilename)
-	if err != nil {
-		log.Printf("[Upload] Presigned URL error: %v\n", err)
-		// Not fatal — the image was saved, just return empty URL
-		url = ""
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(Image{
@@ -116,7 +109,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		UserID:           userID,
 		OriginalFilename: header.Filename,
 		StoredFilename:   storedFilename,
-		URL:              url,
+		URL:              "/api/images/" + storedFilename,
 		FileSize:         fileSize,
 		CreatedAt:        time.Now(),
 	})
@@ -148,12 +141,15 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		// Generate a presigned URL for each image
-		url, err := Storage.GetURL(r.Context(), img.StoredFilename)
-		if err != nil {
-			log.Printf("[ListImages] Presigned URL error for %q: %v\n", img.StoredFilename, err)
-			continue
-		}
-		img.URL = url
+		// url, err := Storage.GetURL(r.Context(), img.StoredFilename)
+		// if err != nil {
+		// 	log.Printf("[ListImages] Presigned URL error for %q: %v\n", img.StoredFilename, err)
+		// 	continue
+		// }
+		// img.URL = url
+
+		// Saving URL for handler
+		img.URL = "/api/images/" + img.StoredFilename
 		imgs = append(imgs, img)
 	}
 
@@ -236,4 +232,32 @@ func resizeIfNeeded(src image.Image, maxDim int) image.Image {
 	dst := image.NewRGBA(image.Rect(0, 0, newW, newH))
 	draw.CatmullRom.Scale(dst, dst.Bounds(), src, bounds, draw.Over, nil)
 	return dst
+}
+
+func ImageHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		objectName := r.PathValue("path") // Go 1.22+; ajuste conforme seu router (gin/chi)
+
+		obj, err := Storage.GetObject(r.Context(), objectName)
+		if err != nil {
+			http.Error(w, "imagem não encontrada", http.StatusNotFound)
+			return
+		}
+		defer obj.Close()
+
+		// Pega metadados (content-type) pra devolver certinho pro navegador
+		stat, err := obj.Stat()
+		if err != nil {
+			http.Error(w, "imagem não encontrada", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", stat.ContentType)
+		w.Header().Set("Cache-Control", "public, max-age=86400")
+
+		if _, err := io.Copy(w, obj); err != nil {
+			// cliente pode ter cancelado a conexão, log e segue
+			log.Printf("erro ao enviar imagem %q: %v", objectName, err)
+		}
+	}
 }

@@ -6,10 +6,10 @@ services:
     container_name: memorina_mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_ROOT_PASSWORD: Memorina@150203
       MYSQL_DATABASE: memorina
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: memorina_user
+      MYSQL_PASSWORD: Memorina@150203
     ports:
       - "3306:3306"
     volumes:
